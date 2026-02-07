@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-prod
+  labels:
+    app: frontend
+    version: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: frontend
+        version: prod
+  template:
+    metadata:
+      labels:
+        app: frontend
+        version: prod
+    spec:
+      containers:
+      - name: frontend
+        image: leonardosartorello/istio-helm-k8s:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+        - name: SERVICE_NAME
+          value: "frontend-prod"
+        - name: UPSTREAM_URI
+          value: "http://middleware/"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: middleware-prod
+  labels:
+    app: middleware
+    version: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: middleware
+        version: prod
+  template:
+    metadata:
+      labels:
+        app: middleware
+        version: prod
+    spec:
+      containers:
+      - name: middleware
+        image: leonardosartorello/istio-helm-k8s:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+        - name: SERVICE_NAME
+          value: "middleware-prod"
+        - name: UPSTREAM_URI
+          value: "http://backend/"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: middleware-canary
+  labels:
+    app: middleware
+    version: canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: middleware
+        version: canary
+  template:
+    metadata:
+      labels:
+        app: middleware
+        version: canary
+    spec:
+      containers:
+      - name: middleware
+        image: leonardosartorello/istio-helm-k8s:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+        - name: SERVICE_NAME
+          value: "middleware-canary"
+        - name: UPSTREAM_URI
+          value: "http://backend/"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-prod
+  labels:
+    app: backend
+    version: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: backend
+        version: prod
+  template:
+    metadata:
+      labels:
+        app: backend
+        version: prod
+    spec:
+      containers:
+      - name: backend
+        image: leonardosartorello/istio-helm-k8s:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+        - name: SERVICE_NAME
+          value: "backend-prod"
+        - name: UPSTREAM_URI
+          value: "https://worldtimeapi.org/api/timezone/America/Sao_Paulo"

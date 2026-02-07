@@ -1,0 +1,16 @@
+{
+    "name": "istio-teste",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "start": "node index.js"
+    },
+    "author": "Leonardo Sartorello",
+    "license": "Apache-2.0",
+    "dependencies": {
+      "express": "^4.19.2",
+      "node-fetch": "^3.3.2"
+    },
+    "type": "module"
+  }
