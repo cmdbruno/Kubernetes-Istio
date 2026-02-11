@@ -29,11 +29,11 @@ spec:
       - destination:
            host: middleware
            subset: prod
-        weight: 90
+        weight: 50
       - destination:
             host: middleware
             subset: canary
-        weight: 10
+        weight: 50
       retries:
         attempts: 3
         perTryTimeout: 1s
