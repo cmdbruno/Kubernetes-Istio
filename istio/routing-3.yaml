@@ -2,63 +2,68 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: frontend
+  namespace: default
 spec:
   hosts:
     - "*"
   gateways:
     - my-gateway
   http:
-    - route:
-      - destination:
-           host: frontend
-           subset: prod
-      retries:
+    - retries:
         attempts: 3
         perTryTimeout: 1s
-        retryOn: "5xx"
---- 
+        retryOn: 5xx
+      route:
+        - destination:
+            host: frontend
+            subset: prod
+
+---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: middleware
+  namespace: default
 spec:
   hosts:
     - middleware
   http:
-  - match:
-    - header:
-      x-dev-user:
-        exact: beta
-    route:
-    - destination:
-           host: middleware
-           subset: canary
+    - match:
+        - headers:
+            x-dev-user:
+              exact: beta
       retries:
         attempts: 3
         perTryTimeout: 1s
-        retryOn: "5xx"
-    - route:
-      - destination:
-           host: middleware
-           subset: prod
-      retries:
+        retryOn: 5xx
+      route:
+        - destination:
+            host: middleware
+            subset: canary
+    - retries:
         attempts: 3
         perTryTimeout: 1s
-        retryOn: "5xx"
+        retryOn: 5xx
+      route:
+        - destination:
+            host: middleware
+            subset: prod
+
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: backend
+  namespace: default
 spec:
   hosts:
     - backend
   http:
-    - route:
-      - destination:
-           host: backend
-           subset: prod
-      retries:
+    - retries:
         attempts: 3
         perTryTimeout: 1s
-        retryOn: "5xx"
+        retryOn: 5xx
+      route:
+        - destination:
+            host: backend
+            subset: prod
